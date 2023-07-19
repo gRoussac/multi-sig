@@ -481,6 +481,18 @@ mod tests {
         )
         .build();
 
+        builder.exec(add_key_request).expect_success().commit();
+
+        let add_key_request = ExecuteRequestBuilder::standard(
+            *DEFAULT_ACCOUNT_ADDR,
+            ADD_ACCOUNT_WASM,
+            runtime_args! {
+                RUNTIME_ARG_NEW_ASSOCIATED_KEY => Key::from(USER_2_ACCOUNT),
+                RUNTIME_ARG_NEW_ASSOCIATED_KEY_WEIGHT => Weight::new(1),
+            },
+        )
+        .build();
+
         // This request should succeed as DEFAULT_ACCOUNT_ADDR has weight 3, above or equal key management threshold && deployment threshold
         builder.exec(add_key_request).expect_success().commit();
 
@@ -506,13 +518,13 @@ mod tests {
 
         // Step 7: Send a multi-signature deploy from an associated key
 
-        // Let's first update deployement threshold to 4, above default account wieght
+        // Let's first update deployement threshold to 5, above default account wieght
         let update_threshold_request = ExecuteRequestBuilder::standard(
             *DEFAULT_ACCOUNT_ADDR,
             UPDATE_THRESHOLDS_WASM,
             runtime_args! {
-                RUNTIME_ARG_NEW_DEPLOYMENT_THRESHOLD =>  Weight::new(4),
-                RUNTIME_ARG_NEW_KEY_MANAGEMENT_THRESHOLD => Weight::new(4),
+                RUNTIME_ARG_NEW_DEPLOYMENT_THRESHOLD =>  Weight::new(5),
+                RUNTIME_ARG_NEW_KEY_MANAGEMENT_THRESHOLD => Weight::new(5),
             },
         )
         .build();
@@ -522,13 +534,13 @@ mod tests {
             .expect_success()
             .commit();
 
-        // This deploy request should fail as DEFAULT_ACCOUNT_ADDR has weight 3, below deployment threshold of 4
+        // This deploy request should fail as DEFAULT_ACCOUNT_ADDR + USER_1_ACCOUNT has weight 4, below deployment threshold of 5
         let deploy_item = DeployItemBuilder::new()
             .with_empty_payment_bytes(runtime_args! {
                 ARG_AMOUNT => *DEFAULT_PAYMENT
             })
             .with_session_code(session_code.clone(), session_args.clone())
-            .with_authorization_keys(&[*DEFAULT_ACCOUNT_ADDR])
+            .with_authorization_keys(&[*DEFAULT_ACCOUNT_ADDR, USER_1_ACCOUNT])
             .with_address(*DEFAULT_ACCOUNT_ADDR)
             .build();
 
@@ -536,13 +548,14 @@ mod tests {
 
         builder.exec(deploy_request).expect_failure();
 
-        // This deploy request should succeed as DEFAULT_ACCOUNT_ADDR + USER_1_ACCOUNT has weight 4, equal deployment threshold of 4
+        // This deploy request should succeed as DEFAULT_ACCOUNT_ADDR + USER_1_ACCOUNT + USER_2_ACCOUNT has weight 5, equal deployment threshold of 5
+
         let deploy_item = DeployItemBuilder::new()
             .with_empty_payment_bytes(runtime_args! {
                 ARG_AMOUNT => *DEFAULT_PAYMENT
             })
             .with_session_code(session_code, session_args)
-            .with_authorization_keys(&[*DEFAULT_ACCOUNT_ADDR, USER_1_ACCOUNT])
+            .with_authorization_keys(&[*DEFAULT_ACCOUNT_ADDR, USER_1_ACCOUNT, USER_2_ACCOUNT])
             .with_address(*DEFAULT_ACCOUNT_ADDR)
             .build();
 
