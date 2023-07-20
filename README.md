@@ -168,41 +168,21 @@ The account would now have one primary key with weight 3, and two associated acc
 1. All associated keys should be kept incredibly secure to ensure the security and integrity of the account.
 2. After all associated keys and action thresholds have been set to the desired multi-signature scheme, the weight of the original primary key can be increased or lowered, depending on your use case. Be careful with this! If you lower the primary key's weight below the key management threshold, the account will require multiple signatures for key management. The account will be unusable if you do not have enough associated keys set up.
 
-## Step 6: Send a multi-signature deploy from the primary account
+## Step 6: Send a deploy from the primary account
 
-After setting up the account with a multi-signature scheme, use the following commands to sign a deploy with multiple keys and send it to the network:
-
-1. `make-deploy` - creates and signs a deploy, saving the output to a file
-2. `sign-deploy` - adds additional signatures for a multi-signature deploy
-3. `send-deploy` - sends the deploy to the network
-
-The following example sends a multi-sig deploy containing Wasm (`hello_world.wasm`) that adds a named key to the account. The deploy originates from the primary account and needs two signatures to meet the `deployment` weight set to 2. Once both keys sign the deploy, either can send it to the network. The Wasm used here can be found in the [hello-world](https://github.com/casper-ecosystem/hello-world) repository.
+This example sends a deploy containing Wasm (`contract.wasm`), which adds a named key to the account. The source code for the Wasm comes from the [hello-world](https://github.com/casper-ecosystem/hello-world) repository. The deploy should succeed as the primary account has a weight of 3, which is greater than the deployment threshold.
 
 ### FOR EXAMPLE ONLY, PLEASE UPDATE PRIOR TO EXECUTING
 
 The first associated key creates and signs the deploy with the `make-deploy` command.
 
 ```bash
-casper-client make-deploy --chain-name casper-test \
+casper-client put-deploy --chain-name casper-test \
 --payment-amount 3000000000 \
 --session-path tests/wasm/contract.wasm \
 --secret-key $PATH/secret_key.pem \
 --session-arg "my-key-name:string='user_1_key'" \
---session-arg "message:string='Hello, World'" \
---output hello_world_one_signature
-```
-
-The second associated key signs the deploy with `sign-deploy` to meet the deployment threshold for the account.
-
-```bash
-casper-client sign-deploy -i hello_world_one_signature -k ~/cspr_nctl/user-2.pem -o hello_world_two_signatures
-
-```
-
-Now the deploy can be sent to the network with the `send-deploy` command:
-
-```bash
-casper-client send-deploy --node-address https://rpc.testnet.casperlabs.io -i hello_world_two_signatures
+--session-arg "message:string='Hello, World'"
 ```
 
 The `hello_world.wasm` will run and add a named key to the account.

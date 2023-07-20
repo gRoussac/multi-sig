@@ -496,7 +496,7 @@ mod tests {
         // This request should succeed as DEFAULT_ACCOUNT_ADDR has weight 3, above or equal key management threshold && deployment threshold
         builder.exec(add_key_request).expect_success().commit();
 
-        // Step 6: Send a multi-signature deploy from the primary account
+        // Step 6: Send a deploy from the primary account
         let session_code = PathBuf::from(CONTRACT_WASM);
         let session_args = runtime_args! {
             RUNTIME_ARG_NAME => TEST_VALUE,
@@ -513,7 +513,7 @@ mod tests {
 
         let deploy_request = ExecuteRequestBuilder::from_deploy_item(deploy_item).build();
 
-        // This request should succeed as DEFAULT_ACCOUNT_ADDR has weight 3, equal deployment threshold
+        // This request should succeed as DEFAULT_ACCOUNT_ADDR has weight 3, greater than the deployment threshold
         builder.exec(deploy_request).expect_success().commit();
 
         // Step 7: Send a multi-signature deploy from an associated key
