@@ -57,21 +57,20 @@ The primary key in this account should now have weight 3.
 
 ```json
 "Account": {
-      "account_hash": "account-hash-d89c49f7e03f418dc285e94e254d53574db878665271f366bb3aeddded7ab757",
-      "action_thresholds": {
-        "deployment": 1,
-        "key_management": 1
-      },
-      "associated_keys": [
-        {
-          "account_hash": "account-hash-d89c49f7e03f418dc285e94e254d53574db878665271f366bb3aeddded7ab757",
-          "weight": 3
-        }
-      ],
-      "main_purse": "uref-b4532f30031b9deb8b2879a91ac185577dcba763de9d48753385e0ef41235dfa-007",
-      "named_keys": []
+  "account_hash": "account-hash-1ed5a1c39bea93c105f2d22c965a84b205b36734a377d05dbb103b6bfaa595a7",
+  "action_thresholds": {
+    "deployment": 1,
+    "key_management": 1
+  },
+  "associated_keys": [
+    {
+      "account_hash": "account-hash-1ed5a1c39bea93c105f2d22c965a84b205b36734a377d05dbb103b6bfaa595a7",
+      "weight": 3
     }
-  }
+  ],
+  "main_purse": "uref-8294864177c2c1ec887a11dae095e487b5256ce6bd2a1f2740d0e4f28bd3251c-007",
+  "named_keys": []
+}
 ```
 
 </details>
@@ -137,7 +136,7 @@ The account would now have one primary key with weight 3, and two associated acc
 
 ```json
 "Account": {
-      "account_hash": "account-hash-d89c49f7e03f418dc285e94e254d53574db878665271f366bb3aeddded7ab757",
+      "account_hash": "account-hash-1ed5a1c39bea93c105f2d22c965a84b205b36734a377d05dbb103b6bfaa595a7",
       "action_thresholds": {
         "deployment": 2,
         "key_management": 3
@@ -148,7 +147,7 @@ The account would now have one primary key with weight 3, and two associated acc
           "weight": 1
         },
         {
-          "account_hash": "account-hash-d89c49f7e03f418dc285e94e254d53574db878665271f366bb3aeddded7ab757",
+          "account_hash": "account-hash-1ed5a1c39bea93c105f2d22c965a84b205b36734a377d05dbb103b6bfaa595a7",
           "weight": 3
         },
         {
@@ -156,7 +155,7 @@ The account would now have one primary key with weight 3, and two associated acc
           "weight": 1
         }
       ],
-      "main_purse": "uref-b4532f30031b9deb8b2879a91ac185577dcba763de9d48753385e0ef41235dfa-007",
+      "main_purse": "uref-8294864177c2c1ec887a11dae095e487b5256ce6bd2a1f2740d0e4f28bd3251c-007",
       "named_keys": []
     }
 ```
@@ -181,7 +180,7 @@ casper-client put-deploy --chain-name casper-test \
 --payment-amount 3000000000 \
 --session-path tests/wasm/contract.wasm \
 --secret-key $PATH/secret_key.pem \
---session-arg "my-key-name:string='user_1_key'" \
+--session-arg "my-key-name:string='primary_account_key'" \
 --session-arg "message:string='Hello, World'"
 ```
 
@@ -189,16 +188,24 @@ The `hello_world.wasm` will run and add a named key to the account.
 
 ```json
 "named_keys": [
-        {
-          "key": "uref-9b9ecaa9e5e235fc6955d4d528cb1b5b38f2d800f6cbbc55351131a3701b5a81-007",
-          "name": "my-key-name"
-        }
-      ]
+  {
+    "key": "uref-9b9ecaa9e5e235fc6955d4d528cb1b5b38f2d800f6cbbc55351131a3701b5a81-007",
+    "name": "my-key-name"
+  }
+]
 ```
 
 ## Step 7: Send a multi-signature deploy from an associated key
 
-To initiate a multi-sig deploy from an associated account instead of the primary account, use the `--session-account` argument, which requires the hex-encoded public key of the account context under which the session code will be executed. The process is very similar to the previous step.
+Given the multi-signature scheme set up in this example, two associated keys need to sign to send a deploy from one of the associated keys. This example uses the following commands to sign a deploy with multiple keys and send it to the network:
+
+1. `make-deploy` - creates and signs a deploy, saving the output to a file
+2. `sign-deploy` - adds additional signatures for a multi-signature deploy
+3. `send-deploy` - sends the deploy to the network
+
+Similar to step 6, this example uses Wasm (`contract.wasm`), which adds a named key to the account. The deploy originates from the primary account, specified with the `--session-account` argument. The deploy needs two signatures to meet the `deployment` weight equal to 2. Once both associated keys sign the deploy, either can send it to the network.
+
+When using the `--session-account` argument, specify the hex-encoded public key of the primary account context under which the session code will be executed.
 
 ### FOR EXAMPLE ONLY, PLEASE UPDATE PRIOR TO EXECUTING
 
@@ -206,19 +213,19 @@ One associated key creates and signs the deploy with the `make-deploy` command, 
 
 ```bash
 casper-client make-deploy --chain-name casper-test \
---payment-amount 3000000000 \
+--payment-amount 300000000 \
 --session-path tests/wasm/contract.wasm \
---secret-key $PATH/secret_key.pem \
+--secret-key $PATH/user_1_secret_key.pem \
 --session-arg "my-key-name:string='user_1_key'" \
 --session-arg "message:string='Hello, World'" \
---session-account 04a9691a9f8f05a0f08bd686f188b27c7dbcd644b415759fd3ca043d916ea02f \
+--session-account 01360af61b50cdcb7b92cffe2c99315d413d34ef77fadee0c105cc4f1d4120f986 \
 --output hello_world_one_signature
 ```
 
 The second associated key signs the deploy with `sign-deploy` to meet the deployment threshold for the account.
 
 ```bash
-casper-client sign-deploy -i hello_world_one_signature -k ~/cspr_nctl/user-2.pem -o hello_world_two_signatures
+casper-client sign-deploy -i hello_world_one_signature -k $PATH/user_2_secret_key.pem  -o hello_world_two_signatures
 
 ```
 
@@ -256,7 +263,7 @@ casper-client put-deploy --node-address https://rpc.testnet.casperlabs.io/ \
 
 ```json
 "Account": {
-      "account_hash": "account-hash-d89c49f7e03f418dc285e94e254d53574db878665271f366bb3aeddded7ab757",
+      "account_hash": "account-hash-1ed5a1c39bea93c105f2d22c965a84b205b36734a377d05dbb103b6bfaa595a7",
       "action_thresholds": {
         "deployment": 2,
         "key_management": 3
@@ -271,7 +278,7 @@ casper-client put-deploy --node-address https://rpc.testnet.casperlabs.io/ \
           "weight": 1
         },
         {
-          "account_hash": "account-hash-d89c49f7e03f418dc285e94e254d53574db878665271f366bb3aeddded7ab757",
+          "account_hash": "account-hash-1ed5a1c39bea93c105f2d22c965a84b205b36734a377d05dbb103b6bfaa595a7",
           "weight": 3
         },
         {
@@ -279,7 +286,7 @@ casper-client put-deploy --node-address https://rpc.testnet.casperlabs.io/ \
           "weight": 1
         }
       ],
-      "main_purse": "uref-b4532f30031b9deb8b2879a91ac185577dcba763de9d48753385e0ef41235dfa-007",
+      "main_purse": "uref-8294864177c2c1ec887a11dae095e487b5256ce6bd2a1f2740d0e4f28bd3251c-007",
       "named_keys": []
     }
 ```
@@ -306,7 +313,7 @@ The resulting account should not contain the associated key that was just remove
 
 ```json
 "Account": {
-      "account_hash": "account-hash-d89c49f7e03f418dc285e94e254d53574db878665271f366bb3aeddded7ab757",
+      "account_hash": "account-hash-1ed5a1c39bea93c105f2d22c965a84b205b36734a377d05dbb103b6bfaa595a7",
       "action_thresholds": {
         "deployment": 2,
         "key_management": 3
@@ -317,7 +324,7 @@ The resulting account should not contain the associated key that was just remove
           "weight": 1
         },
         {
-          "account_hash": "account-hash-d89c49f7e03f418dc285e94e254d53574db878665271f366bb3aeddded7ab757",
+          "account_hash": "account-hash-1ed5a1c39bea93c105f2d22c965a84b205b36734a377d05dbb103b6bfaa595a7",
           "weight": 3
         },
         {
@@ -325,7 +332,7 @@ The resulting account should not contain the associated key that was just remove
           "weight": 1
         }
       ],
-      "main_purse": "uref-b4532f30031b9deb8b2879a91ac185577dcba763de9d48753385e0ef41235dfa-007",
+      "main_purse": "uref-8294864177c2c1ec887a11dae095e487b5256ce6bd2a1f2740d0e4f28bd3251c-007",
       "named_keys": []
     }
 ```
