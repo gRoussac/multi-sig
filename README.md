@@ -253,38 +253,23 @@ The `hello_world.wasm` will run and add a named key to the account.
 
 ## Removing a compromised key from the account
 
-This example shows how to remove a key that may have been compromised. The example adds another associated key  only to remove it using the `remove_account.wasm` session code. 
+This example shows how to remove a compromised key from an account. The example adds an associated key only to remove it using the `remove_account.wasm` session code.
 
 >**Caution**: Before removing a key, ensure the remaining associated keys can combine their weight to meet the threshold for key management. Otherwise, the account could become unusable. Changing key weights or adding new associated keys would only be possible by meeting the key management threshold. Proceed with caution.
 
 ### FOR EXAMPLE ONLY, PLEASE UPDATE PRIOR TO EXECUTING
 
-Given the current setup, three associated keys need to sign the deploy to add a fourth associated key. One associated key creates and signs the deploy with the `make-deploy` command.
+Given the current setup, the primary account will add an associated key, and then remove it. In other use cases, associated keys may need to combine their signatures to send a multi-sig deploy that removes a key.
 
 ```bash
-casper-client make-deploy --chain-name casper-test \
+casper-client put-deploy --node-address https://rpc.testnet.casperlabs.io/ \
+--chain-name "casper-test" \
 --payment-amount 500000000 \
 --secret-key $PATH/secret_key.pem \
 --session-path target/wasm32-unknown-unknown/release/add_account.wasm \
---session-arg "new_key:key='account-hash-77ea2e433c94c9cb8303942335da458672249d38c1fa5d1d7a7500b862ff52a4" \
---session-arg "weight:u8='1'" \
---output add_account_one_signature
+--session-arg "new_key:key='account-hash-1fed34baa6807a7868bb18f91b161d99ebf21763810fe4c92e39775d10bbf1f8" \
+--session-arg "weight:u8='1'"
 ```
-
-The second and third associated keys sign the deploy with `sign-deploy` to meet the key management threshold for the account.
-
-```bash
-casper-client sign-deploy -i add_account_one_signature -k ~/cspr_nctl/user-2.pem -o add_account_two_signatures
-casper-client sign-deploy -i add_account_two_signatures -k ~/cspr_nctl/user-3.pem -o add_account_three_signatures
-```
-
-Send the deploy containing the `add_account.wasm` to add a new associated account with weight 1.
-
-```bash
-casper-client send-deploy --node-address https://rpc.testnet.casperlabs.io -i add_account_three_signatures
-```
-
-The account should now have four associated keys with weight 1 and the primary key (from which all deploys originate) with weight 3.
 
 <details>
 <summary>Account details</summary>
@@ -303,10 +288,6 @@ The account should now have four associated keys with weight 1 and the primary k
         },
         {
           "account_hash": "account-hash-1fed34baa6807a7868bb18f91b161d99ebf21763810fe4c92e39775d10bbf1f8",
-          "weight": 1
-        },
-        {
-          "account_hash": "account-hash-77ea2e433c94c9cb8303942335da458672249d38c1fa5d1d7a7500b862ff52a4",
           "weight": 1
         },
         {
@@ -325,43 +306,23 @@ The account should now have four associated keys with weight 1 and the primary k
 
 </details>
 
-The `remove_account.wasm` will remove the newly added account to demonstrate the possibility of removing associated keys that may have been compromised. This deploy needs to be signed by three associated keys to meet the key management threshold.
-
-One associated key creates and signs the deploy with the `make-deploy` command.
-
-### FOR EXAMPLE ONLY, PLEASE UPDATE PRIOR TO EXECUTING
-
-```bash
-casper-client make-deploy --chain-name casper-test \
---payment-amount 500000000 \
---secret-key $PATH/secret_key.pem \
---session-path target/wasm32-unknown-unknown/release/remove_account.wasm \
---session-arg "new_key:key='account-hash-77ea2e433c94c9cb8303942335da458672249d38c1fa5d1d7a7500b862ff52a4" \
---session-arg "weight:u8='1'" \
---output remove_account_one_signature
-```
-
-The second and third associated keys sign the deploy with `sign-deploy` to meet the key management threshold for the account.
-
-```bash
-casper-client sign-deploy -i remove_account_one_signature -k ~/cspr_nctl/user-2.pem -o remove_account_two_signatures
-casper-client sign-deploy -i remove_account_two_signatures -k ~/cspr_nctl/user-3.pem -o remove_account_three_signatures
-```
-
-Send the deploy to the network to remove an associated key.
+The `remove_account.wasm` will remove the newly added account to demonstrate the possibility of removing associated keys that may have been compromised.
 
 ### REMOVE KEYS WITH CAUTION! DO NOT RUN THIS EXAMPLE ON MAINNET
 
 ```bash
-casper-client send-deploy --node-address https://rpc.testnet.casperlabs.io -i remove_account_three_signatures
+casper-client put-deploy --node-address https://rpc.testnet.casperlabs.io/ \
+--chain-name "casper-test" \
+--payment-amount 500000000 \
+--secret-key $PATH/secret_key.pem \
+--session-path target/wasm32-unknown-unknown/release/remove_account.wasm \
+--session-arg "remove_key:key='account-hash-1fed34baa6807a7868bb18f91b161d99ebf21763810fe4c92e39775d10bbf1f8"
 ```
 
-The resulting account should not contain the associated key that you just removed.
+The resulting account should not contain the associated key that was just removed.
 
 <details>
 <summary>Account details</summary>
-
-### FOR EXAMPLE ONLY, PLEASE UPDATE PRIOR TO EXECUTING
 
 ```json
 "Account": {
@@ -373,10 +334,6 @@ The resulting account should not contain the associated key that you just remove
       "associated_keys": [
         {
           "account_hash": "account-hash-04a9691a9f8f05a0f08bd686f188b27c7dbcd644b415759fd3ca043d916ea02f",
-          "weight": 1
-        },
-        {
-          "account_hash": "account-hash-1fed34baa6807a7868bb18f91b161d99ebf21763810fe4c92e39775d10bbf1f8",
           "weight": 1
         },
         {
