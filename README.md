@@ -105,7 +105,7 @@ The account's action thresholds would look like this:
 
 ## Step 5: Add associated keys to the primary account
 
-To add an associated key to the primary account, use the `add_account.wasm` provided. This example adds two keys (`account-hash-e2d0...`, `account-hash-04a9...`) with weight 1 to the primary account (`account-hash-d89c...`).
+To add an associated key to the primary account, use the `add_account.wasm` provided. This example adds two keys to the primary account (`account-hash-d89c...`): `user_1` with `account-hash-e2d0...`, and `user_2` with `account-hash-04a9...`.
 
 ### FOR EXAMPLE ONLY, PLEASE UPDATE PRIOR TO EXECUTING
 
