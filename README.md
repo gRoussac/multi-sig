@@ -43,10 +43,10 @@ Update the weight of the primary key to 3 by calling the `update_associated_keys
 ```bash
 casper-client put-deploy --node-address https://rpc.testnet.casperlabs.io/ \
 --chain-name "casper-test" \
---payment-amount 2000000000 \
---secret-key /path/to/keys_dir/secret_key.pem \
---session-path contracts/update_keys/target/wasm32-unknown-unknown/release/update_associated_keys.wasm \
---session-arg "associated_key:account_hash='account-hash-<ACCOUNT_HASH_HEX_HERE>'" \
+--payment-amount 500000000 \
+--secret-key $PATH/secret_key.pem \
+--session-path target/wasm32-unknown-unknown/release/update_associated_keys.wasm \
+--session-arg "associated_key:key='account-hash-<ACCOUNT_HASH_HEX_HERE>'" \
 --session-arg "new_weight:u8='3'"
 ```
 
@@ -87,9 +87,11 @@ Set up a multi-signature scheme for the account, by updating the `deployment` an
 casper-client put-deploy \
 --node-address https://rpc.testnet.casperlabs.io \
 --chain-name casper-test \
---payment-amount 5000000000 \
---secret-key /path/to/keys_dir/secret_key.pem \
---session-path contracts/update_thresholds/target/wasm32-unknown-unknown/release/update_thresholds.wasm
+--payment-amount 500000000 \
+--secret-key $PATH/secret_key.pem \
+--session-path target/wasm32-unknown-unknown/release/update_thresholds.wasm \
+--session-arg "deployment_threshold:u8='2'" \
+--session-arg "key_management_threshold:u8='3'"
 ```
 
 The account's action thresholds would look like this:
@@ -111,10 +113,10 @@ To add an associated key to the primary account, use the `add_account.wasm` prov
 ```bash
 casper-client put-deploy --node-address https://rpc.testnet.casperlabs.io/ \
 --chain-name "casper-test" \
---payment-amount 50000000000 \
---secret-key /path/to/keys_dir/secret_key.pem \
---session-path contracts/add_account/target/wasm32-unknown-unknown/release/add_account.wasm \
---session-arg "new_key:account_hash='account-hash-e2d00525cac31ae2756fb155f289d276c6945b6914923fe275de0cb127bffee7" \
+--payment-amount 500000000 \
+--secret-key $PATH/secret_key.pem \
+--session-path target/wasm32-unknown-unknown/release/add_account.wasm \
+--session-arg "new_key:key='account-hash-e2d00525cac31ae2756fb155f289d276c6945b6914923fe275de0cb127bffee7" \
 --session-arg "weight:u8='1'"
 ```
 
@@ -123,18 +125,18 @@ Next, add a second and third account as associated keys with weight 1.
 ```bash
 casper-client put-deploy --node-address https://rpc.testnet.casperlabs.io/ \
 --chain-name "casper-test" \
---payment-amount 50000000000 \
---secret-key /path/to/keys_dir/secret_key.pem \
---session-path contracts/add_account/target/wasm32-unknown-unknown/release/add_account.wasm \
---session-arg "new_key:account_hash='account-hash-04a9691a9f8f05a0f08bd686f188b27c7dbcd644b415759fd3ca043d916ea02f" \
+--payment-amount 500000000 \
+--secret-key $PATH/secret_key.pem \
+--session-path target/wasm32-unknown-unknown/release/add_account.wasm \
+--session-arg "new_key:key='account-hash-04a9691a9f8f05a0f08bd686f188b27c7dbcd644b415759fd3ca043d916ea02f" \
 --session-arg "weight:u8='1'"
 
 casper-client put-deploy --node-address https://rpc.testnet.casperlabs.io/ \
 --chain-name "casper-test" \
---payment-amount 50000000000 \
---secret-key /path/to/keys_dir/secret_key.pem \
---session-path contracts/add_account/target/wasm32-unknown-unknown/release/add_account.wasm \
---session-arg "new_key:account_hash='account-hash-1fed34baa6807a7868bb18f91b161d99ebf21763810fe4c92e39775d10bbf1f8" \
+--payment-amount 500000000 \
+--secret-key $PATH/secret_key.pem \
+--session-path target/wasm32-unknown-unknown/release/add_account.wasm \
+--session-arg "new_key:key='account-hash-1fed34baa6807a7868bb18f91b161d99ebf21763810fe4c92e39775d10bbf1f8" \
 --session-arg "weight:u8='1'"
 ```
 
@@ -199,8 +201,8 @@ The first associated key creates and signs the deploy with the `make-deploy` com
 ```bash
 casper-client make-deploy --chain-name casper-test \
 --payment-amount 3000000000 \
---session-path contracts/hello_world/target/wasm32-unknown-unknown/release/hello_world.wasm \
---secret-key /path/to/keys_dir/secret_key.pem \
+--session-path tests/wasm/contract.wasm \
+--secret-key $PATH/secret_key.pem \
 --session-arg "my-key-name:string='user_1_key'" \
 --session-arg "message:string='Hello, World'" \
 --output hello_world_one_signature
@@ -241,8 +243,8 @@ One associated key creates and signs the deploy with the `make-deploy` command, 
 ```bash
 casper-client make-deploy --chain-name casper-test \
 --payment-amount 3000000000 \
---session-path contracts/hello_world/target/wasm32-unknown-unknown/release/hello_world.wasm \
---secret-key /path/to/keys_dir/secret_key.pem \
+--session-path tests/wasm/contract.wasm \
+--secret-key $PATH/secret_key.pem \
 --session-arg "my-key-name:string='user_1_key'" \
 --session-arg "message:string='Hello, World'" \
 --session-account 04a9691a9f8f05a0f08bd686f188b27c7dbcd644b415759fd3ca043d916ea02f \
@@ -277,10 +279,10 @@ Given the current setup, three associated keys need to sign the deploy to add a 
 
 ```bash
 casper-client make-deploy --chain-name casper-test \
---payment-amount 50000000000 \
---secret-key /path/to/keys_dir/secret_key.pem \
---session-path contracts/add_account/target/wasm32-unknown-unknown/release/add_account.wasm \
---session-arg "new_key:account_hash='account-hash-77ea2e433c94c9cb8303942335da458672249d38c1fa5d1d7a7500b862ff52a4" \
+--payment-amount 500000000 \
+--secret-key $PATH/secret_key.pem \
+--session-path target/wasm32-unknown-unknown/release/add_account.wasm \
+--session-arg "new_key:key='account-hash-77ea2e433c94c9cb8303942335da458672249d38c1fa5d1d7a7500b862ff52a4" \
 --session-arg "weight:u8='1'" \
 --output add_account_one_signature
 ```
@@ -347,10 +349,10 @@ One associated key creates and signs the deploy with the `make-deploy` command.
 
 ```bash
 casper-client make-deploy --chain-name casper-test \
---payment-amount 50000000000 \
---secret-key /path/to/keys_dir/secret_key.pem \
---session-path contracts/add_account/target/wasm32-unknown-unknown/release/remove_account.wasm \
---session-arg "new_key:account_hash='account-hash-77ea2e433c94c9cb8303942335da458672249d38c1fa5d1d7a7500b862ff52a4" \
+--payment-amount 500000000 \
+--secret-key $PATH/secret_key.pem \
+--session-path target/wasm32-unknown-unknown/release/remove_account.wasm \
+--session-arg "new_key:key='account-hash-77ea2e433c94c9cb8303942335da458672249d38c1fa5d1d7a7500b862ff52a4" \
 --session-arg "weight:u8='1'" \
 --output remove_account_one_signature
 ```
