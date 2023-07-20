@@ -17,13 +17,13 @@ The purpose of this repository is to provide an example of how to integrate key 
 git clone https://github.com/cryofracture/multi-sig && cd multi-sig
 ```
 
-## Step 2: Build the sample Wasm provided
+## Step 2: Build and test the sample Wasm provided
 
 ```bash
 rustup update
 make clean
 make prepare
-make build-contracts
+make test
 ```
 
 ## Step 3: Increase the primary key's weight to set thresholds
