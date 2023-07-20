@@ -136,28 +136,28 @@ The account would now have one primary key with weight 3, and two associated acc
 
 ```json
 "Account": {
+  "account_hash": "account-hash-1ed5a1c39bea93c105f2d22c965a84b205b36734a377d05dbb103b6bfaa595a7",
+  "action_thresholds": {
+    "deployment": 2,
+    "key_management": 3
+  },
+  "associated_keys": [
+    {
+      "account_hash": "account-hash-04a9691a9f8f05a0f08bd686f188b27c7dbcd644b415759fd3ca043d916ea02f",
+      "weight": 1
+    },
+    {
       "account_hash": "account-hash-1ed5a1c39bea93c105f2d22c965a84b205b36734a377d05dbb103b6bfaa595a7",
-      "action_thresholds": {
-        "deployment": 2,
-        "key_management": 3
-      },
-      "associated_keys": [
-        {
-          "account_hash": "account-hash-04a9691a9f8f05a0f08bd686f188b27c7dbcd644b415759fd3ca043d916ea02f",
-          "weight": 1
-        },
-        {
-          "account_hash": "account-hash-1ed5a1c39bea93c105f2d22c965a84b205b36734a377d05dbb103b6bfaa595a7",
-          "weight": 3
-        },
-        {
-          "account_hash": "account-hash-e2d00525cac31ae2756fb155f289d276c6945b6914923fe275de0cb127bffee7",
-          "weight": 1
-        }
-      ],
-      "main_purse": "uref-8294864177c2c1ec887a11dae095e487b5256ce6bd2a1f2740d0e4f28bd3251c-007",
-      "named_keys": []
+      "weight": 3
+    },
+    {
+      "account_hash": "account-hash-e2d00525cac31ae2756fb155f289d276c6945b6914923fe275de0cb127bffee7",
+      "weight": 1
     }
+  ],
+  "main_purse": "uref-8294864177c2c1ec887a11dae095e487b5256ce6bd2a1f2740d0e4f28bd3251c-007",
+  "named_keys": []
+}
 ```
 
 </details>
@@ -263,32 +263,32 @@ casper-client put-deploy --node-address https://rpc.testnet.casperlabs.io/ \
 
 ```json
 "Account": {
+  "account_hash": "account-hash-1ed5a1c39bea93c105f2d22c965a84b205b36734a377d05dbb103b6bfaa595a7",
+  "action_thresholds": {
+    "deployment": 2,
+    "key_management": 3
+  },
+  "associated_keys": [
+    {
+      "account_hash": "account-hash-04a9691a9f8f05a0f08bd686f188b27c7dbcd644b415759fd3ca043d916ea02f",
+      "weight": 1
+    },
+    {
+      "account_hash": "account-hash-1fed34baa6807a7868bb18f91b161d99ebf21763810fe4c92e39775d10bbf1f8",
+      "weight": 1
+    },
+    {
       "account_hash": "account-hash-1ed5a1c39bea93c105f2d22c965a84b205b36734a377d05dbb103b6bfaa595a7",
-      "action_thresholds": {
-        "deployment": 2,
-        "key_management": 3
-      },
-      "associated_keys": [
-        {
-          "account_hash": "account-hash-04a9691a9f8f05a0f08bd686f188b27c7dbcd644b415759fd3ca043d916ea02f",
-          "weight": 1
-        },
-        {
-          "account_hash": "account-hash-1fed34baa6807a7868bb18f91b161d99ebf21763810fe4c92e39775d10bbf1f8",
-          "weight": 1
-        },
-        {
-          "account_hash": "account-hash-1ed5a1c39bea93c105f2d22c965a84b205b36734a377d05dbb103b6bfaa595a7",
-          "weight": 3
-        },
-        {
-          "account_hash": "account-hash-e2d00525cac31ae2756fb155f289d276c6945b6914923fe275de0cb127bffee7",
-          "weight": 1
-        }
-      ],
-      "main_purse": "uref-8294864177c2c1ec887a11dae095e487b5256ce6bd2a1f2740d0e4f28bd3251c-007",
-      "named_keys": []
+      "weight": 3
+    },
+    {
+      "account_hash": "account-hash-e2d00525cac31ae2756fb155f289d276c6945b6914923fe275de0cb127bffee7",
+      "weight": 1
     }
+  ],
+  "main_purse": "uref-8294864177c2c1ec887a11dae095e487b5256ce6bd2a1f2740d0e4f28bd3251c-007",
+  "named_keys": []
+}
 ```
 
 </details>
@@ -313,28 +313,28 @@ The resulting account should not contain the associated key that was just remove
 
 ```json
 "Account": {
+  "account_hash": "account-hash-1ed5a1c39bea93c105f2d22c965a84b205b36734a377d05dbb103b6bfaa595a7",
+  "action_thresholds": {
+    "deployment": 2,
+    "key_management": 3
+  },
+  "associated_keys": [
+    {
+      "account_hash": "account-hash-04a9691a9f8f05a0f08bd686f188b27c7dbcd644b415759fd3ca043d916ea02f",
+      "weight": 1
+    },
+    {
       "account_hash": "account-hash-1ed5a1c39bea93c105f2d22c965a84b205b36734a377d05dbb103b6bfaa595a7",
-      "action_thresholds": {
-        "deployment": 2,
-        "key_management": 3
-      },
-      "associated_keys": [
-        {
-          "account_hash": "account-hash-04a9691a9f8f05a0f08bd686f188b27c7dbcd644b415759fd3ca043d916ea02f",
-          "weight": 1
-        },
-        {
-          "account_hash": "account-hash-1ed5a1c39bea93c105f2d22c965a84b205b36734a377d05dbb103b6bfaa595a7",
-          "weight": 3
-        },
-        {
-          "account_hash": "account-hash-e2d00525cac31ae2756fb155f289d276c6945b6914923fe275de0cb127bffee7",
-          "weight": 1
-        }
-      ],
-      "main_purse": "uref-8294864177c2c1ec887a11dae095e487b5256ce6bd2a1f2740d0e4f28bd3251c-007",
-      "named_keys": []
+      "weight": 3
+    },
+    {
+      "account_hash": "account-hash-e2d00525cac31ae2756fb155f289d276c6945b6914923fe275de0cb127bffee7",
+      "weight": 1
     }
+  ],
+  "main_purse": "uref-8294864177c2c1ec887a11dae095e487b5256ce6bd2a1f2740d0e4f28bd3251c-007",
+  "named_keys": []
+}
 ```
 
 </details>
