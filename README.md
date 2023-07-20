@@ -265,11 +265,11 @@ casper-client send-deploy --node-address https://rpc.testnet.casperlabs.io -i he
 The `hello_world.wasm` will run and add a named key to the account.
 
 
-## Step 8: Remove a key from the account
+## Removing a compromised key from the account
 
-This example adds a fourth associated key with `account-hash-77ea2e433c94c9cb8303942335da458672249d38c1fa5d1d7a7500b862ff52a4`, and then removes it using the `remove_account.wasm` session code. The goal is to show how to remove a key that may have been compromised.
+This example shows how to remove a key that may have been compromised. The example adds another associated key  only to remove it using the `remove_account.wasm` session code. 
 
->**Caution**: If you remove one of the existing keys without adding the fourth associated key, the account will become unusable since none of the remaining keys will meet the required weight for key management. Changing weights or adding new associated keys would become impossible.
+>**Caution**: Before removing a key, ensure the remaining associated keys can combine their weight to meet the threshold for key management. Otherwise, the account could become unusable. Changing key weights or adding new associated keys would only be possible by meeting the key management threshold. Proceed with caution.
 
 ### FOR EXAMPLE ONLY, PLEASE UPDATE PRIOR TO EXECUTING
 
