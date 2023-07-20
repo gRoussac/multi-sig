@@ -106,7 +106,7 @@ The account's action thresholds would look like this:
 
 ## Step 5: Add associated keys to the primary account
 
-To add an associated key to the primary account, use the `add_account.wasm` provided. The example below starts by adding the following account as an associated key: `account-hash-e2d00525cac31ae2756fb155f289d276c6945b6914923fe275de0cb127bffee7`.
+To add an associated key to the primary account, use the `add_account.wasm` provided. This example adds two keys (`account-hash-e2d0...`, `account-hash-04a9...`) with weight 1 to the primary account (`account-hash-d89c...`).
 
 ### FOR EXAMPLE ONLY, PLEASE UPDATE PRIOR TO EXECUTING
 
@@ -120,8 +120,6 @@ casper-client put-deploy --node-address https://rpc.testnet.casperlabs.io/ \
 --session-arg "weight:u8='1'"
 ```
 
-Next, add a second and third account as associated keys with weight 1.
-
 ```bash
 casper-client put-deploy --node-address https://rpc.testnet.casperlabs.io/ \
 --chain-name "casper-test" \
@@ -130,17 +128,9 @@ casper-client put-deploy --node-address https://rpc.testnet.casperlabs.io/ \
 --session-path target/wasm32-unknown-unknown/release/add_account.wasm \
 --session-arg "new_key:key='account-hash-04a9691a9f8f05a0f08bd686f188b27c7dbcd644b415759fd3ca043d916ea02f" \
 --session-arg "weight:u8='1'"
-
-casper-client put-deploy --node-address https://rpc.testnet.casperlabs.io/ \
---chain-name "casper-test" \
---payment-amount 500000000 \
---secret-key $PATH/secret_key.pem \
---session-path target/wasm32-unknown-unknown/release/add_account.wasm \
---session-arg "new_key:key='account-hash-1fed34baa6807a7868bb18f91b161d99ebf21763810fe4c92e39775d10bbf1f8" \
---session-arg "weight:u8='1'"
 ```
 
-The account would now have one primary key with weight 3, and three associated accounts, each with weight 1.
+The account would now have one primary key with weight 3, and two associated accounts, each with weight 1.
 
 <details>
 <summary>Account details</summary>
@@ -155,10 +145,6 @@ The account would now have one primary key with weight 3, and three associated a
       "associated_keys": [
         {
           "account_hash": "account-hash-04a9691a9f8f05a0f08bd686f188b27c7dbcd644b415759fd3ca043d916ea02f",
-          "weight": 1
-        },
-        {
-          "account_hash": "account-hash-1fed34baa6807a7868bb18f91b161d99ebf21763810fe4c92e39775d10bbf1f8",
           "weight": 1
         },
         {
